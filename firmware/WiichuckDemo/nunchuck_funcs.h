@@ -4,13 +4,21 @@
  * This library is from the Bionic Arduino course : 
  *                          http://todbot.com/blog/bionicarduino/
  *
- * 2007 Tod E. Kurt, http://todbot.com/blog/
+ * 2007-11 Tod E. Kurt, http://todbot.com/blog/
  *
  * The Wii Nunchuck reading code originally from Windmeadow Labs
  *   http://www.windmeadow.com/node/42
  */
 
+#if (ARDUINO >= 100)
+#include <Arduino.h>
+#else
 #include <WProgram.h>
+//#define Wire.write(x) Wire.send(x)
+//#define Wire.read() Wire.receive()
+#endif
+
+
 
 static uint8_t nunchuck_buf[6];   // array to store nunchuck data,
 
@@ -31,8 +39,13 @@ static void nunchuck_init()
 { 
     Wire.begin();                // join i2c bus as master
     Wire.beginTransmission(0x52);// transmit to device 0x52
-    Wire.send(0x40);// sends memory address
-    Wire.send(0x00);// sends sent a zero.  
+#if (ARDUINO >= 100)
+    Wire.write((uint8_t)0x40);// sends memory address
+    Wire.write((uint8_t)0x00);// sends sent a zero.  
+#else
+    Wire.send((uint8_t)0x40);// sends memory address
+    Wire.send((uint8_t)0x00);// sends sent a zero.  
+#endif
     Wire.endTransmission();// stop transmitting
 }
 
@@ -41,7 +54,11 @@ static void nunchuck_init()
 static void nunchuck_send_request()
 {
     Wire.beginTransmission(0x52);// transmit to device 0x52
-    Wire.send(0x00);// sends one byte
+#if (ARDUINO >= 100)
+    Wire.write((uint8_t)0x00);// sends one byte
+#else
+    Wire.send((uint8_t)0x00);// sends one byte
+#endif
     Wire.endTransmission();// stop transmitting
 }
 
@@ -61,7 +78,11 @@ static int nunchuck_get_data()
     Wire.requestFrom (0x52, 6);// request data from nunchuck
     while (Wire.available ()) {
         // receive byte as an integer
-        nunchuck_buf[cnt] = nunchuk_decode_byte(Wire.receive());
+#if (ARDUINO >= 100)
+        nunchuck_buf[cnt] = nunchuk_decode_byte( Wire.read() );
+#else
+        nunchuck_buf[cnt] = nunchuk_decode_byte( Wire.receive() );
+#endif
         cnt++;
     }
     nunchuck_send_request();  // send request for next data payload
