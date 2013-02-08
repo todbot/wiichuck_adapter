@@ -119,19 +119,19 @@ static void nunchuck_print_data()
         c_button = 1;
 
     if ((nunchuck_buf[5] >> 2) & 1) 
-        accel_x_axis += 2;
-    if ((nunchuck_buf[5] >> 3) & 1)
         accel_x_axis += 1;
+    if ((nunchuck_buf[5] >> 3) & 1)
+        accel_x_axis += 2;
 
     if ((nunchuck_buf[5] >> 4) & 1)
-        accel_y_axis += 2;
-    if ((nunchuck_buf[5] >> 5) & 1)
         accel_y_axis += 1;
+    if ((nunchuck_buf[5] >> 5) & 1)
+        accel_y_axis += 2;
 
     if ((nunchuck_buf[5] >> 6) & 1)
-        accel_z_axis += 2;
-    if ((nunchuck_buf[5] >> 7) & 1)
         accel_z_axis += 1;
+    if ((nunchuck_buf[5] >> 7) & 1)
+        accel_z_axis += 2;
 
     Serial.print(i,DEC);
     Serial.print("\t");
